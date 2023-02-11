@@ -12,12 +12,8 @@
     <li>Add the following to your server.cfg:</li>
     <code style="width: 100%; display: inline-block; padding: 5px;">ensure lx_drugs</code>
     <li>Restart your server or execute the following commands</li>
-    <code style="width: 100%; display: inline-block; padding: 5px;">
-        /refresh
-        <br>
-        <br>
-        /ensure lx_drugs
-    </code>
+    <code style="width: 100%; display: inline-block; padding: 5px;">/refresh</code>
+    <code style="width: 100%; display: inline-block; padding: 5px;">/ensure lx_drugs</code>
 </ol>
 <br>
 <div style="width: 100%; background-color: #34495e; padding: 7.5px; border-left: 5px solid #f39c12; display: flex; border-radius: 7.5px;">
