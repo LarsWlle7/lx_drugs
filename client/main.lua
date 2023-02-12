@@ -153,7 +153,7 @@ function OpenChangeCodeMenu(lab) --//TODO: Fix nested menus
         end, function(_, menu2)
             menu2.close()
         end)
-
+        
     end, function(_, menu)
         menu.close()
     end)
@@ -180,11 +180,16 @@ function OpenLabInventory(lab)
                     OpenLabInventoryDepositMenu(lab)
                     return
                 end
-                ESX.TriggerServerCallback("lx_drugs:TakeItem", function(inventory) 
+                -- ESX.TriggerServerCallback("lx_drugs:TakeItem", function(inventory) 
+                --     menu.close()
+                --     lab["storage_data"] = inventory
+                --     OpenLabInventory(lab)
+                -- end, lab.id, data.current.item, data.current.value) --//TODO: Prompt amount
+                PromptAmount("lx_drugs:TakeItem", lab, data, function(inventory)
                     menu.close()
                     lab["storage_data"] = inventory
                     OpenLabInventory(lab)
-                end, lab.id, data.current.item, data.current.value) --//TODO: Prompt amount
+                end)
             end, function(data, menu)
                 HasInventoryOpen = false
                 menu.close()
@@ -208,10 +213,10 @@ function OpenLabInventoryDepositMenu(lab)
             elements = data,
             title = Config.Locales["INVENTORY_TITLE"]
         }, function(data, menu)
-            ESX.TriggerServerCallback("lx_drugs:DepositItem", function() 
+            PromptAmount("lx_drugs:DepositItem", lab, data, function()
                 menu.close()
                 OpenLabInventory(lab)
-            end, lab.id, data.current.item, data.current.value) --//TODO: Prompt amount
+            end)
         end, function(data, menu)
             HasInventoryOpen = false
             menu.close()
@@ -223,6 +228,19 @@ function OpenLabInventoryDepositMenu(lab)
                 ESX.UI.Menu.CloseAll()
             end
         end
+    end)
+end
+
+--@param event -> "lx_drugs:TakeItem" | ""
+function PromptAmount(event, lab, data, cb)
+    ESX.UI.Menu.Open("dialog", GetCurrentResourceName(), "prompt_count", {
+        title = Config.Locales["COUNT"]
+    }, function(_data, menu)
+        if not _data.value then return TriggerEvent("chat:addMessage", {template = Config.Locales["INVALID_INPUT"]}) end
+        ESX.TriggerServerCallback(event, cb, lab.id, data.current.item, tonumber(_data.value))
+        menu.close()
+    end, function(_, menu)
+        menu.close()
     end)
 end
 
@@ -241,7 +259,7 @@ Citizen.CreateThread(function()
             local escape_x, escape_y, escape_z = lab.teleport_to.x, lab.teleport_to.y, lab.teleport_to.z
             if Vdist(from_x, from_y, from_z, GetEntityCoords(GetPlayerPed(-1))) <= 5 and not IsInLab then
                 if string.len(lab.owner) <= 0 then
-                    Draw3DText(from_x, from_y, from_z, Config.Locales["BUY_LAB"])
+                    Draw3DText(from_x, from_y, from_z, Config.Locales["BUY_LAB"] .. " ~w~(~g~" .. Config.Locales["CURRENCY"] .. lab.price .. "~w~)")
                     if IsControlJustPressed(0, 38) then
                         ESX.TriggerServerCallback("lx_drugs:BuyLab", function(labs) 
                             Labs = labs

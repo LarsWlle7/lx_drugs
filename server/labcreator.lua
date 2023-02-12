@@ -24,12 +24,14 @@ ESX.RegisterServerCallback("lx_drugs:labcreator:createLab", function(source, cb,
     if xPlayer.getGroup() ~= Config.LabCreatorMinGroup then return DropPlayer(source, "Invalid permissions.") end
     if not Lab:IsValidLabData(data) then return print("^7[^1ERROR^7] Invalid lab data submitted") end
     local data = Lab:CreatorDataToDBData(data)
-    MySQL.query.await("INSERT INTO `druglabs` (`id`, `teleport_from`, `teleport_to`, `code`, `storage_size`, `storage_data`, `produce_location`, `process_location`, `managelab_location`, `buyprice`, `owner`) VALUES (NULL, ?, ?, '', 0, '[]', ?, ?, ?, 0, '')", {
+    MySQL.query.await("INSERT INTO `druglabs` (`id`, `teleport_from`, `teleport_to`, `code`, `storage_size`, `storage_data`, `produce_location`, `process_location`, `managelab_location`, `buyprice`, `owner`) VALUES (NULL, ?, ?, '', ?, '[]', ?, ?, ?, ?, '')", {
         json.encode(data.teleport_from), 
         json.encode(data.teleport_to),
+        data.storage_size,
         json.encode(data.produce_loc),
         json.encode(data.process_loc),
         json.encode(data.managelab_loc),
+        data.buyprice
     })
     FetchLabInformation()
     cb(CachedLabs)

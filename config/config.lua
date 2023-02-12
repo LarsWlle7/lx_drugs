@@ -22,6 +22,7 @@ Config.Locales = {
     ["LACKING_BUDGET"] = '<span style="width: 450px; display: inline-block; padding: 5px; border-radius: 5px; background-color: #e74c3c; font-size: 16px;"><b>Labs</b><br>You don\'t have enough cash on you to buy this lab.</span>',
     ["BOUGHT_LAB"] = '<span style="width: 450px; display: inline-block; padding: 5px; border-radius: 5px; background-color: #e74c3c; font-size: 16px;"><b>Labs</b><br>You have bought this lab. Your code is %i.</span>',
     ["INVALID_PERMISSIONS"] = '<span style="width: 450px; display: inline-block; padding: 5px; border-radius: 5px; background-color: #e74c3c; font-size: 16px;"><b>Labs</b><br>You don\'t have permissions to do this action.</span>',
+    ["NOT_ENOUGH_SPACE"] = '<span style="width: 450px; display: inline-block; padding: 5px; border-radius: 5px; background-color: #e74c3c; font-size: 16px;"><b>Labs</b><br>You don\'t have enough space in storage.</span>',
 
     -- 3D TEXT
     ["ENTER_LAB"] = "~b~[E]~w~ - Enter lab",
@@ -58,6 +59,7 @@ Config.Locales = {
     ["LABCREATOR_SET_PROCESS"] = "Set process location",
     ["LABCREATOR_SET_PRODUCE"] = "Set produce location",
     ["LABCREATOR_CONFIRM"] = "Confirm settings",
+    ["COUNT"] = "Itemcount",
 
     -- OTHER
     ["CURRENCY"] = "€"

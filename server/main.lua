@@ -46,6 +46,13 @@ function Lab:GetLabDataById(id)
     return nil
 end
 
+function Lab:DoesInventoryHaveSpaceToAdd(lab, item, count)
+    local inv, size = lab.storage_data, lab.storage_size
+    local currentSize = 0
+    for i, k in ipairs(inv) do currentSize = currentSize + k end -- Why is += not a thing in lua? :(
+    return not (currentSize + count >= size)
+end
+
 function Lab:AddItemToStorage(lab, item, count)
     local inv = lab.storage_data
     if inv[item] then
@@ -59,7 +66,7 @@ end
 
 function Lab:RemoveItemFromStorage(lab, item, count)
     local inv = lab.storage_data
-    if inv[item] then
+    if inv[item] and not inv[item] <= 0 then
         inv[item] = inv[item] - count
     else
         inv[item] = 0
@@ -90,6 +97,15 @@ function Lab:CreatorDataToDBData(data)
         buyprice = data.buyprice
     }
 end
+
+AddEventHandler("playerDropped", function(reason)
+    local source = source
+    if PlayersInLabs[source] == nil then return end
+    local xPlayer = ESX.GetPlayerFromId(source)
+    local lab = Lab:GetLabDataById(PlayersInLabs[source].id)
+    PlayersInLabs[source] = nil
+    xPlayer.setCoords(lab.teleport_from)
+end)
 
 Citizen.CreateThread(function()
     FetchLabInformation()

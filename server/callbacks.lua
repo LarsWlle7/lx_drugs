@@ -10,6 +10,14 @@ end)
 ESX.RegisterServerCallback("lx_drugs:EnterLab", function(source, cb, id)
     if table.contains(PlayersInLabs, {id = id, source = source}) then return DropPlayer(source, "Already in lab.") end
     local otherPlayers = Lab:GetPlayersInLab(id)
+    PlayersInLabs[source] = {source = source, id = id}
+    cb(otherPlayers)
+end)
+
+ESX.RegisterServerCallback("lx_drugs:ExitLab", function(source, cb, id)
+    if not table.contains(PlayersInLabs, {id = id, source = source}) then return DropPlayer(source, "Not in lab") end
+    local otherPlayers = Lab:GetPlayersInLab(id)
+    PlayersInLabs[source] = nil
     cb(otherPlayers)
 end)
 
@@ -79,7 +87,7 @@ ESX.RegisterServerCallback("lx_drugs:GetInventoryItems", function(source, cb)
     local elements = {}
     for i, k in pairs(inv) do
         table.insert(elements, {
-            label = ESX.GetItemLabel(i),
+            label = ESX.GetItemLabel(i) .. " (x" .. k .. ")",
             value = k,
             item = i
         })
@@ -96,7 +104,7 @@ ESX.RegisterServerCallback("lx_drugs:GetLabInventoryItems", function(source, cb,
     local elements = {}
     for i, k in pairs(inv) do
         table.insert(elements, {
-            label = ESX.GetItemLabel(i),
+            label = ESX.GetItemLabel(i) .. " (x" .. k .. ")",
             value = k,
             item = i
         })
@@ -107,6 +115,10 @@ end)
 ESX.RegisterServerCallback("lx_drugs:DepositItem", function(source, cb, id, item, count) 
     local lab, index = Lab:GetLabDataById(id)
     if not lab or not index then return end
+    if not Lab:DoesInventoryHaveSpaceToAdd(lab, item, count) then
+        TriggerClientEvent("chat:addMessage", source, {template = Config.Locales["NOT_ENOUGH_SPACE"]})
+        return
+    end
     local xPlayer = ESX.GetPlayerFromId(source)
     xPlayer.removeInventoryItem(item, count)
     Lab:AddItemToStorage(lab, item, count)
